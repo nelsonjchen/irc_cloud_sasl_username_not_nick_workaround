@@ -1,0 +1,6 @@
+import os
+
+IRCCLOUD_EMAIL = os.environ['IRCCLOUD_EMAIL']
+IRCCLOUD_PASSWORD = os.environ['IRCCLOUD_PASSWORD']
+
+
