@@ -1,6 +1,6 @@
 {
   "name": "IRCCloud SASL Username not Nick Workaround",
-  "description": "Workaround for users with SASL name != Nickserv Identification",
+  "description": "Workaround for users with SASL name != Nickserv Identification. \uD83D\uDEA8 WARNING: scheduler not fully configured when deployed! Read README for details. \uD83D\uDEA8",
   "repository": "https://github.com/nelsonjchen/irc_cloud_sasl_username_not_nick_workaround",
   "keywords": ["irccloud", "workaround"],
   "env": {
