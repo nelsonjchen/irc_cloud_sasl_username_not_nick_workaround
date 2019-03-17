@@ -61,7 +61,8 @@ async def consumer(message_json: str, websocket: websockets.client.WebSocketClie
                 'cid': message['cid'],
                 'hostname': message['hostname'],
                 'port': message['port'],
-                'ssl': message['ssl'],
+                # Hack Hardcode to True
+                'ssl': "1",
                 'netname': message['name'],
                 'nickname': message['nick'],
                 'realname': message['realname'],
@@ -76,12 +77,9 @@ async def consumer(message_json: str, websocket: websockets.client.WebSocketClie
                 edit_server_values['nickname'] = IRC_SERVER_IRCCLOUD_NICK_NAME
                 await websocket.send(json.dumps(edit_server_values))
 
-            if message['status'] != 'connected' and message['nick'] != IRC_SERVER_IRCCLOUD_SASL_NAME:
-                # Set the name to be the correct nickname
-                edit_server_values['nickname'] = IRC_SERVER_IRCCLOUD_SASL_NAME
-                await websocket.send(json.dumps(edit_server_values))
-
-                pass
+            # if message['status'] != 'connected' and message['nick'] != IRC_SERVER_IRCCLOUD_SASL_NAME:
+            #     edit_server_values['nickname'] = IRC_SERVER_IRCCLOUD_SASL_NAME
+            #     await websocket.send(json.dumps(edit_server_values))
 
             if message['status'] == 'disconnected':
                 await websocket.send(json.dumps({
@@ -89,19 +87,19 @@ async def consumer(message_json: str, websocket: websockets.client.WebSocketClie
                     'cid': message['cid']
                 }))
 
-            if message['status'] == 'connected' and message['nick'] == IRC_SERVER_IRCCLOUD_NICK_NAME:
-                print('--- ALL IS WELL ---')
-                sys.exit(0)
-
         if message['type'] == 'status_changed':
             if message['cid'] == state['cid']:
+                if message['new_status'] not in ['connected', 'connected_ready']:
+                    state['edit_server_values']['nickname'] = IRC_SERVER_IRCCLOUD_SASL_NAME
+                    await websocket.send(json.dumps(state['edit_server_values']))
                 if message['new_status'] == 'connected':
-                    if message['nick'] != IRC_SERVER_IRCCLOUD_NICK_NAME:
-                        state['edit_server_values']['nickname'] = IRC_SERVER_IRCCLOUD_NICK_NAME
-                        await websocket.send(json.dumps(state['edit_server_values']))
                     if message['nick'] == IRC_SERVER_IRCCLOUD_NICK_NAME:
                         print('--- ALL IS WELL ---')
                         sys.exit(0)
+        if message['type'] == 'sasl_success':
+            if message['cid'] == state['cid']:
+                state['edit_server_values']['nickname'] = IRC_SERVER_IRCCLOUD_NICK_NAME
+                await websocket.send(json.dumps(state['edit_server_values']))
     return state
 
 
