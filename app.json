@@ -1,0 +1,26 @@
+{
+  "name": "IRCCloud SASL Username not Nick Workaround",
+  "description": "Workaround for users with SASL name != Nickserv Identification",
+  "repository": "https://github.com/nelsonjchen/irc_cloud_sasl_username_not_nick_workaround",
+  "keywords": ["irccloud", "workaround"],
+  "env": {
+    "IRCCLOUD_EMAIL": {
+      "description": "IRCCloud Email. Eg. user@email.com"
+    },
+    "IRCCLOUD_PASSWORD": {
+      "description": "IRCCloud Password. Eg. hunter2"
+    },
+    "IRC_SERVER_IRCCLOUD_NETWORK_NAME": {
+      "description": "The network name as seen in the IRCCloud GUI. Eg. Rizon, Secret Server, Freenet, OFTC"
+    },
+    "IRC_SERVER_IRCCLOUD_SASL_NAME": {
+      "description": "The username to use for SASL authentication. Eg. user(21232)"
+    },
+    "IRC_SERVER_IRCCLOUD_NICK_NAME": {
+      "description": "The nickname you want to use after SASL is authentication. Eg. xXxDongSmasherVegeta420xXx"
+    }
+  },
+  "addons": [
+    "scheduler"
+  ]
+}
