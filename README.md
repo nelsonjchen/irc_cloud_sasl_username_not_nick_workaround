@@ -43,3 +43,7 @@ better than nothing.
 ## Upgrade
 
 Delete the App and redo the above. 
+
+### Alternative if you have access to `git`
+
+Just push the repository to Heroku. No need to resetup environment variables or the scheduler.
