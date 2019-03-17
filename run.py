@@ -123,18 +123,10 @@ async def connect_and_check():
             state = await consumer(message_json, websocket, state)
 
 
-async def check_multiple_times():
-    for _i in range(5):
-        try:
-            await asyncio.wait_for(connect_and_check(), timeout=10)
-        except asyncio.TimeoutError:
-            print(f'#### Check {_i + 1}! ####')
-
-
 async def main():
     # Wait for at most 100 seconds
     try:
-        await asyncio.wait_for(check_multiple_times(), timeout=30)
+        await asyncio.wait_for(connect_and_check(), timeout=30)
     except asyncio.TimeoutError:
         print('Finished!')
 
