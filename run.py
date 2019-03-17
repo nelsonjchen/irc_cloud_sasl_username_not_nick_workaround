@@ -1,5 +1,8 @@
+import asyncio
+import json
 import os
 import requests
+import websockets
 
 IRCCLOUD_EMAIL = os.environ['IRCCLOUD_EMAIL']
 IRCCLOUD_PASSWORD = os.environ['IRCCLOUD_PASSWORD']
@@ -21,4 +24,35 @@ login_response = requests.post('https://www.irccloud.com/chat/login', headers={
     'password': IRCCLOUD_PASSWORD,
     'token': token
 }).json()
-pass
+
+session = login_response['session']
+
+
+async def consumer(message_json: str):
+    message = json.loads(message_json)
+    print(f"< {message}")
+    if message['type'] == 'oob_include':
+        response = requests.get(
+            f"https://www.irccloud.com{message['url']}",
+            headers={
+                'Cookie': f'session={session}',
+                'Origin': 'https://api.irccloud.com',
+            }
+        )
+
+
+async def hello():
+    async with websockets.connect(
+        'wss://api.irccloud.com/',
+        ssl=True,
+        extra_headers={
+            'Cookie': f'session={session}',
+            'Origin': 'https://api.irccloud.com',
+        }
+    ) as websocket:
+        while True:
+            async for message_json in websocket:
+                await consumer(message_json)
+
+
+asyncio.get_event_loop().run_until_complete(hello())
