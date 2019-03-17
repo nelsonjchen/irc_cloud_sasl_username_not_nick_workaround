@@ -6,6 +6,7 @@ import websockets
 
 IRCCLOUD_EMAIL = os.environ['IRCCLOUD_EMAIL']
 IRCCLOUD_PASSWORD = os.environ['IRCCLOUD_PASSWORD']
+IRC_SERVER_IRCCLOUD_NAME = os.environ['IRC_SERVER_IRCCLOUD_NAME']
 
 # curl -X POST "https://www.irccloud.com/chat/auth-formtoken" --header "content-length: 0"
 
@@ -28,20 +29,31 @@ login_response = requests.post('https://www.irccloud.com/chat/login', headers={
 session = login_response['session']
 
 
-async def consumer(message_json: str):
+async def consumer(message_json: str, websocket: websockets.client.WebSocketClientProtocol):
     message = json.loads(message_json)
     print(f"< {message}")
-    if message['type'] == 'oob_include':
-        response = requests.get(
-            f"https://www.irccloud.com{message['url']}",
-            headers={
-                'Cookie': f'session={session}',
-                'Origin': 'https://api.irccloud.com',
-            }
-        )
+    if 'type' in message:
+        if message['type'] == 'oob_include':
+            backlog = requests.get(
+                f"https://www.irccloud.com{message['url']}",
+                headers={
+                    'Cookie': f'session={session}',
+                    'Origin': 'https://api.irccloud.com',
+                }
+            ).json()
+            for message_json in backlog:
+                await consumer(json.dumps(message_json), websocket)
+        if message['type'] == 'makeserver':
+            if message['name'] != IRC_SERVER_IRCCLOUD_NAME:
+                return
+            if not message['disconnected']:
+                return
+            # Begin Reconnect Process
 
 
 async def hello():
+    # noinspection PyUnusedLocal
+    websocket: websockets.client.WebSocketClientProtocol
     async with websockets.connect(
         'wss://api.irccloud.com/',
         ssl=True,
@@ -50,9 +62,10 @@ async def hello():
             'Origin': 'https://api.irccloud.com',
         }
     ) as websocket:
-        while True:
-            async for message_json in websocket:
-                await consumer(message_json)
+        # noinspection PyUnusedLocal
+        message_json: str
+        async for message_json in websocket:
+            await consumer(message_json, websocket)
 
 
 asyncio.get_event_loop().run_until_complete(hello())
