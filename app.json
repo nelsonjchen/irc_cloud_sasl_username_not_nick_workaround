@@ -17,7 +17,7 @@
       "description": "The username to use for SASL authentication. Eg. user(21232)"
     },
     "IRC_SERVER_IRCCLOUD_NICK_NAME": {
-      "description": "The nickname you want to use after SASL is authentication. Eg. xXxDongSmasherVegeta420xXx"
+      "description": "The nickname you want to use after SASL authentication. Eg. xXxDongSmasherVegeta420xXx"
     }
   },
   "addons": [
