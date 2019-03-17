@@ -6,7 +6,12 @@ import websockets
 
 IRCCLOUD_EMAIL = os.environ['IRCCLOUD_EMAIL']
 IRCCLOUD_PASSWORD = os.environ['IRCCLOUD_PASSWORD']
+# Fancy Server Name in IRCCloud GUI, eg. Rizon, SynIRC, freenode, Secret Server
 IRC_SERVER_IRCCLOUD_NAME = os.environ['IRC_SERVER_IRCCLOUD_NAME']
+# user(12333)
+IRC_SERVER_IRCCLOUD_SASL_NAME = os.environ['IRC_SERVER_IRCCLOUD_SASL_NAME']
+# xXxDongSmasherVegeta420xXx
+IRC_SERVER_IRCCLOUD_NICK_NAME = os.environ['IRC_SERVER_IRCCLOUD_NICK_NAME']
 
 # curl -X POST "https://www.irccloud.com/chat/auth-formtoken" --header "content-length: 0"
 
